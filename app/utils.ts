@@ -18,11 +18,15 @@ export const captureAndDetect = async (
         { label: "person", position: "directly ahead" },
         { label: "chair", position: "to your left" },
         { label: "door", position: "to your right" },
-         {label: "water ", position: "behind you" },
-          {label: "Cameron", position: "in front of you" },
-          {label: "W'sssss", position: "in the chat" },
-          {label: "C sharp", position: "for the win" },
-          {label: "Daniel", position: "listening to nothing to your right" }
+        {label: "water ", position: "behind you" },
+        {label: "Cameron", position: "in front of you" },
+        {label: "W'sssss", position: "in the chat" },
+        {label: "C sharp", position: "for the win" },
+        {label: "Daniel", position: "listening to nothing to your right" },
+        {label: "Who is winning JumboHack '26", position: "Bet we are!!" },
+        {label: "Ram", position: "is the best dev I've ever met!!" },
+
+        
     ];
 
     const description = mockDetections
