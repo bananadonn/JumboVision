@@ -1,12 +1,36 @@
 import React from "react";
 
+let lastText = "";
+let lastTime = 0;
+
 export const speak = (text: string) => {
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.1;
-    utterance.pitch = 1.0;
-    utterance.volume = 1.0;
-    window.speechSynthesis.speak(utterance);
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+
+  const now = Date.now();
+
+  // prevent spam / rapid repeats
+  if (text === lastText && now - lastTime < 1200) return;
+  if (now - lastTime < 300) return;
+
+  const synth = window.speechSynthesis;
+
+  // On some browsers voices load async; don’t speak until they exist
+  const voices = synth.getVoices();
+  if (!voices || voices.length === 0) {
+    // try again after voices load
+    synth.onvoiceschanged = () => speak(text);
+    return;
+  }
+
+  synth.cancel();
+
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  u.rate = 1.05;
+  synth.speak(u);
+
+  lastText = text;
+  lastTime = now;
 };
 
 export const captureAndDetect = async (
@@ -24,9 +48,7 @@ export const captureAndDetect = async (
         {label: "C sharp", position: "for the win" },
         {label: "Daniel", position: "listening to nothing to your right" },
         {label: "Who is winning JumboHack '26", position: "Bet we are!!" },
-        {label: "Ram", position: "is the best dev I've ever met!!" },
-
-        
+        {label: "Ram", position: "is the best dev I've ever met!!" },   
     ];
 
     const description = mockDetections

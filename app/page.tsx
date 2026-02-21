@@ -61,6 +61,7 @@ export default function App(){
         <div>
             <div className="font-bold gap-12 text-center text-4xl w-full bg-[#2a1a2e] py-4 px-6 flex items-center justify-center">
                 {/* JUMBOVISION BUTTON */}
+
                 <button className={`relative h-16 rounded-xl px-5 py-2.5 transition-all duration-300 hover:bg-[#5E2B6B] ${focusedIndex === 0 ? "ring-2 ring-[#D4A843] ring-offset-2 ring-offset-[#100a1b] bg-[#5E2B6B]" : ""}`}>
                     <div className="flex">
                         <img src="https://i.imgur.com/L29RYeB.png" height={45} width={45}/>
@@ -117,9 +118,9 @@ export default function App(){
 
                 <canvas ref={canvasRef} width={640} height={480} className="hidden" />
 
-                <p className="text-yellow-200 text-center max-w-[360px]">
+                {/* <p className="text-yellow-200 text-center max-w-[360px]">
                     {lastDescription ? `Last: ${lastDescription}` : "No scan yet."}
-                </p>
+                </p> */}
                 
             </div>
         </div>        
