@@ -11,88 +11,67 @@ const elements = [
   { id: "startcamera", text: "Start Camera button. Press Enter to activate.", text2: "Press space to scan your surroundings", isButton: true },
 ];
 
-export default function App() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+export default function App(){
 
-  const [cameraOpen, setCameraOpen] = useState(false);
-  const [isDetecting, setIsDetecting] = useState(false);
-  const [lastDescription, setLastDescription] = useState("");
-  const [started, setStarted] = useState(true);
-  const [focusedIndex, setFocusedIndex] = useState(0);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [cameraOpen, setCameraOpen] = useState(false);
+    const [isDetecting, setIsDetecting] = useState(false);
+    const [lastDescription, setLastDescription] = useState("");
+    const [started, setStarted] = useState(true);
+    const [focusedIndex, setFocusedIndex] = useState(0);
+    
+    useEffect(() => {
+        if (!started) return;
+        
+        const handleKeyDown = (e:KeyboardEvent) => {
+            if (e.code === "ArrowRight") {
+                setFocusedIndex(prev => {
+                    const next = Math.min(prev + 1, elements.length - 1);
+                    speak(elements[next].text);
+                    return next;
+                })
+            }
+            if (e.code === "ArrowLeft") {
+                setFocusedIndex(prev => {
+                    const next = Math.max(prev - 1, 0);
+                    speak(elements[next].text);
+                    return next;
+                })
+            }
+            if (e.code === "Enter") {
+                if (elements[focusedIndex].id === "startcamera") {
+                    speak("Starting camera.");
+                    startCamera(videoRef, setCameraOpen);
+                    speak(elements[focusedIndex].text2);
+                }
+                else {
+                    speak(elements[focusedIndex].text2);
+                }
+            }
+        };
+        
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+        }, [started, focusedIndex, cameraOpen]);
 
-  useEffect(() => {
-    if (!started) return;
+    //start capture loop to send frames
+    useEffect(() => {
+        if (!cameraOpen) return;
+        captureAndDetect(videoRef, canvasRef, setLastDescription);
+    }, [cameraOpen]);
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.code === "ArrowRight") {
-        setFocusedIndex((prev) => {
-          const next = Math.min(prev + 1, elements.length - 1);
-          speak(elements[next].text);
-          return next;
-        });
-      }
+    return(
+        <div>
+            <div className="font-bold gap-12 text-center text-4xl w-full bg-[#2a1a2e] py-4 px-6 flex items-center justify-center">
+                {/* JUMBOVISION BUTTON */}
 
-      if (e.code === "ArrowLeft") {
-        setFocusedIndex((prev) => {
-          const next = Math.max(prev - 1, 0);
-          speak(elements[next].text);
-          return next;
-        });
-      }
-
-      if (e.code === "Enter") {
-        if (elements[focusedIndex].id === "startcamera") {
-          speak("Starting camera.");
-          startCamera(videoRef, setCameraOpen);
-          speak(elements[focusedIndex].text2);
-        } else if (elements[focusedIndex].id === "skipToCamera") {
-          setFocusedIndex((prev) => {
-            const next = Math.min(prev + 3, elements.length - 1);
-            speak(elements[next].text);
-            return next;
-          });
-        } else {
-          speak(elements[focusedIndex].text2);
-        }
-      }
-
-      if (e.code === "Space" && cameraOpen) {
-        e.preventDefault();
-        setIsDetecting(true);
-        captureAndDetect(videoRef, canvasRef, setLastDescription).then(() => setIsDetecting(false));
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [started, focusedIndex, cameraOpen]);
-
-  const navBtnBase =
-    "rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 transition-all duration-200 whitespace-nowrap";
-  const navBtnFocus = "ring-2 ring-[#D4A843] ring-offset-2 ring-offset-black bg-[#5E2B6B]";
-  const navBtnIdle = "bg-transparent hover:bg-[#5E2B6B]/80";
-
-  return (
-    <div className="min-h-screen bg-black text-[#D4A843] overflow-x-hidden">
-      {/* NAVBAR */}
-      <header className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b border-black/10">
-        <div className="mx-auto max-w-6xl px-3 sm:px-6 py-3">
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base md:text-lg font-bold text-black">
-            {/* JUMBOVISION */}
-            <button
-              className={`${navBtnBase} ${focusedIndex === 0 ? navBtnFocus : navBtnIdle}`}
-              aria-label="JumboVision"
-            >
-              <span className="flex items-center gap-2">
-                <img
-                  src="https://i.imgur.com/L29RYeB.png"
-                  alt="JumboVision logo"
-                  className="h-7 w-7 sm:h-9 sm:w-9"
-                />
-                <span>JumboVision</span>
-              </span>
-            </button>
+                <button className={`relative h-16 rounded-xl px-5 py-2.5 transition-all duration-300 hover:bg-[#5E2B6B] ${focusedIndex === 0 ? "ring-2 ring-[#D4A843] ring-offset-2 ring-offset-[#100a1b] bg-[#5E2B6B]" : ""}`}>
+                    <div className="flex">
+                        <img src="https://i.imgur.com/L29RYeB.png" height={45} width={45}/>
+                        <span className="relative">JumboVision</span>
+                    </div>
+                </button>
 
             {/* SKIP */}
             <button

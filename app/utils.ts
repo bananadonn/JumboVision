@@ -33,52 +33,78 @@ export const speak = (text: string) => {
   lastTime = now;
 };
 
+let ws: WebSocket | null = null;
+
+const getWebSocket = (): Promise<WebSocket> => {
+    return new Promise((resolve, reject) => {
+        if (ws && ws.readyState == WebSocket.OPEN) {
+            resolve(ws);
+            return;
+        }
+        ws = new WebSocket("ws://127.0.0.1:8000/ws");
+        ws.onopen = () => resolve(ws!);
+        ws.onerror = (e) => reject(e);
+    })
+}
+
+let isRunning = false;
+
 export const captureAndDetect = async (
-        videoRef: React.RefObject<HTMLVideoElement | null>,
-        canvasRef: React.RefObject<HTMLCanvasElement | null>,
-        setLastDescription: (desc: string) => void
-        ) => {
-        // optional safety checks
-        if (!videoRef.current) {
-            speak("Camera is not ready yet.");
-            return;
-        }
-        if (!canvasRef.current) {
-            speak("Canvas is not ready yet.");
-            return;
-        }
+    videoRef: React.RefObject<HTMLVideoElement | null>,
+    canvasRef: React.RefObject<HTMLCanvasElement | null>,
+    setLastDescription: (desc: string) => void
+) => {
+    
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if(!video || !canvas) return;
 
-        const mockDetections = [
-            { label: "person", position: "directly ahead" },
-            { label: "chair", position: "to your left" },
-            { label: "door", position: "to your right" },
-            { label: "water", position: "behind you" },
-        ];
+    isRunning = true;
 
-        const description = mockDetections.map(d => `${d.label} ${d.position}`).join(", ");
-        speak(description);
-        setLastDescription(description);
+    const loop = async () => {
+        if (!isRunning) return;
+        console.log("loop running");
+
+        const ctx = canvas!.getContext("2d");
+        ctx?.drawImage( video , 0,0, canvas!.width, canvas!.height);
+        const base64 = canvas!.toDataURL("image/jpeg").split(",")[1];
+
+        try {
+            const socket = await getWebSocket();
+
+            socket.onmessage = (e) => {
+                console.log(e.data);
+                const data = JSON.parse(e.data);
+                if (!data.alerts || data.alerts.length === 0) {
+                    loop();
+                    return;
+                }
+                const description = data.alerts.join(",");
+                speak(description);
+                setLastDescription(description);
+                loop();
+            };
+
+            socket.send(JSON.stringify({frame: base64 }))
+    } catch (err) {
+        console.log("Could not connect to server.");
+    }
+    };
+    loop();
 };
 
 export const startCamera = async (
-  videoRef: React.RefObject<HTMLVideoElement | null>,
-  setCameraOpen: (open: boolean) => void
+    videoRef: React.RefObject<HTMLVideoElement | null>,
+    setCameraOpen: (open: boolean) => void
 ) => {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { ideal: "environment" } },
-      audio: false,
-    });
-
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream;
-      await videoRef.current.play();
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+        }
+        setCameraOpen(true);
+        speak("Camera started. Press Space to scan the scene.");
+    } catch (err) {
+        speak("Could not access camera. Please allow camera permissions.");
     }
-
-    setCameraOpen(true);
-    speak("Back camera started. Press Space to scan the scene.");
-  } catch (err) {
-    speak("Camera access denied. Please allow camera permissions.");
-    console.error(err);
-  }
 };
