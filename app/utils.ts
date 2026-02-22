@@ -34,41 +34,40 @@ export const speak = (text: string) => {
 };
 
 export const captureAndDetect = async (
-    videoRef: React.RefObject<HTMLVideoElement>,
-    canvasRef: React.RefObject<HTMLCanvasElement>,
-    setLastDescription: (desc: string) => void
-) => {
-    const mockDetections = [
-        { label: "person", position: "directly ahead" },
-        { label: "chair", position: "to your left" },
-        { label: "door", position: "to your right" },
-        {label: "water ", position: "behind you" },
-        {label: "Cameron", position: "in front of you" },
-        {label: "W'sssss", position: "in the chat" },
-        {label: "C sharp", position: "for the win" },
-        {label: "Daniel", position: "listening to nothing to your right" },
-        {label: "Who is winning JumboHack '26", position: "Bet we are!!" },
-        {label: "Ram", position: "is the best dev I've ever met!!" },   
-    ];
+        videoRef: React.RefObject<HTMLVideoElement | null>,
+        canvasRef: React.RefObject<HTMLCanvasElement | null>,
+        setLastDescription: (desc: string) => void
+        ) => {
+        // optional safety checks
+        if (!videoRef.current) {
+            speak("Camera is not ready yet.");
+            return;
+        }
+        if (!canvasRef.current) {
+            speak("Canvas is not ready yet.");
+            return;
+        }
 
-    const description = mockDetections
-        .map((d) => `${d.label} ${d.position}`)
-        .join(", ");
+        const mockDetections = [
+            { label: "person", position: "directly ahead" },
+            { label: "chair", position: "to your left" },
+            { label: "door", position: "to your right" },
+            { label: "water", position: "behind you" },
+        ];
 
-    speak(description);
-    setLastDescription(description);
+        const description = mockDetections.map(d => `${d.label} ${d.position}`).join(", ");
+        speak(description);
+        setLastDescription(description);
 };
 
 export const startCamera = async (
-  videoRef: React.RefObject<HTMLVideoElement>,
+  videoRef: React.RefObject<HTMLVideoElement | null>,
   setCameraOpen: (open: boolean) => void
 ) => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: {
-        facingMode: { ideal: "environment" }
-      },
-      audio: false
+      video: { facingMode: { ideal: "environment" } },
+      audio: false,
     });
 
     if (videoRef.current) {
