@@ -18,10 +18,21 @@
     --foreground: rgb(255, 196, 58);
   }
 }
+@import "tailwindcss";
+
+:root {
+  --background: #000000;
+  --foreground: #D4A843;
+}
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   background: var(--background);
-  line-height: 1.6;
   color: var(--foreground);
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  letter-spacing: clamp(1px, 0.4vw, 4px);
+  line-height: 1.6;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  letter-spacing: clamp(1px, 0.4vw, 3px);
 }
