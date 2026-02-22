@@ -7,7 +7,7 @@ import time
 #initalize model
 model = YOLO("yolov8n.pt")  # lightweight model
 
-INTERVAL = 3 #3 seconds between every announcement
+INTERVAL = 0 #3 seconds between every announcement
 last_announcement_time = 0
 frame_counter = {}
 
@@ -25,7 +25,7 @@ def get_depth_zone(box_area, frame_area):
     ratio = box_area / frame_area
     if ratio > 0.15:
         return "close"
-    elif ratio > .05:
+    elif ratio > .07:
         return "medium distance"
     else:
         return "far"
@@ -53,7 +53,7 @@ async def analyze_frame(frame_bytes: bytes) -> list[str]:
     for obj in labels:
         frame_counter[obj] = frame_counter.get(obj,0) + 1
     
-    confirmed = []
+    confirmed = ["There's "]
 
     for result in results:
         for box in result.boxes:
@@ -66,7 +66,10 @@ async def analyze_frame(frame_bytes: bytes) -> list[str]:
                 box_area = (x2 -x1) * (y2 -y1)
                 direction = get_horizontal_zone(center_x, frame_width)
                 distance = get_depth_zone(box_area, frame_area)
-                confirmed.append(f"{obj} detected {distance} at {direction}")
+
+                distance_phrase = f"{distance} to you " if distance == "close" else f"{distance} from you " if distance == "close" else f"{distance}"
+                direction_phrase = f"in the {direction}" if direction == "center" else f"on your {direction}"
+                confirmed.append(f"a {obj} {distance_phrase} {direction_phrase}, ")
             
     now = time.time()
     if confirmed and (now - last_announcement_time >= INTERVAL):
