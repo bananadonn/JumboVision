@@ -8,9 +8,11 @@ to accomplish .....
 The Team:
     - Cameron Griswold: Mostly helped build the front end and the Arrowkey TTS functionality
     - Catherine Ting: Design concept, frontend + website functionality
+    - Donald Reith: Create websocket connection from frontend webcam to FASTAPI server and implemented YOLOv8n for object detection & convert to usable speech
+    - 
 
 Aknowledgements:
-    We used YOLO to create object identificiation and location text by sending it
+    We used YOLOv8n to create object identificiation and location text by sending it
     frames from the camera
 
 

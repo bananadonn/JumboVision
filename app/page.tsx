@@ -130,7 +130,7 @@ export default function App(){
               autoPlay
               playsInline
               muted
-              className="w-full scale-x-[-1] aspect-[4/3] rounded-xl bg-[#573066]"
+              className="w-full scale-x-[-1] aspect-[4/3] rounded-xl bg-[#ffffff]"
             />
             <canvas ref={canvasRef} width={640} height={480} className="hidden" />
           </div>
