@@ -55,6 +55,11 @@ export default function App(){
         return () => window.removeEventListener("keydown", handleKeyDown);
         }, [started, focusedIndex, cameraOpen]);
 
+
+    const navBtnBase ="rounded-xl px-3 py-2 sm:px-4 sm:py-2.5 transition-all duration-200 whitespace-nowrap";
+    const navBtnFocus = "ring-2 ring-[#D4A843] ring-offset-2 ring-offset-black bg-[#5E2B6B]";
+    const navBtnIdle = "bg-transparent hover:bg-[#5E2B6B]/80";
+
     //start capture loop to send frames
     useEffect(() => {
         if (!cameraOpen) return;
@@ -97,8 +102,7 @@ export default function App(){
               What We Do
             </button>
           </div>
-        </div>
-      </header>
+        
 
       {/* MAIN */}
       <main className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12">

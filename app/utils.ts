@@ -14,6 +14,8 @@ export const speak = (text: string) => {
 
   const synth = window.speechSynthesis;
 
+  if(synth.speaking) return;
+  
   // On some browsers voices load async; don’t speak until they exist
   const voices = synth.getVoices();
   if (!voices || voices.length === 0) {
