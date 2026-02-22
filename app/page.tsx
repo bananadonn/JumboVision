@@ -70,7 +70,7 @@ export default function App(){
 
     return(
         <div>
-            <div className="font-bold gap-12 text-center text-4xl w-full bg-[#ffffff] py-4 px-6 flex items-center justify-center">
+            <div className="font-bold gap-5 text-center text-4xl w-full bg-[#ffffff] py-4 px-6 flex items-center justify-center">
                 {/* JUMBOVISION BUTTON */}
 
                 <button className={`relative h-16 rounded-xl px-5 py-2.5 transition-all duration-300 hover:bg-[#5E2B6B] ${focusedIndex === 0 ? "ring-2 ring-[#D4A843] ring-offset-2 ring-offset-[#100a1b] bg-[#5E2B6B]" : ""}`}>
