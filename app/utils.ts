@@ -73,13 +73,16 @@ export const captureAndDetect = async (
             const socket = await getWebSocket();
 
             socket.onmessage = (e) => {
+                console.log("message received");
                 console.log(e.data);
                 const data = JSON.parse(e.data);
                 if (!data.alerts || data.alerts.length === 0) {
+                    console.log("looping empty alert");
                     loop();
                     return;
                 }
                 const description = data.alerts.join(",");
+                console.log("speaking");
                 speak(description);
                 setLastDescription(description);
                 loop();

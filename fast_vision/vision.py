@@ -14,16 +14,12 @@ frame_counter = {}
 #zone mapping (left, right or center)
 def get_horizontal_zone(center_x, frame_width):
     ratio = center_x / frame_width
-    if ratio < 0.20:
-        return "10 o'clock"
-    elif ratio < 0.40:
-        return "11 o'clock"
-    elif ratio < 0.60:
-        return "12 o'clock"
-    elif ratio < 0.80:
-        return "1 o'clock"
+    if ratio < 0.33:
+        return "left"
+    elif ratio < 0.66:
+        return "center"
     else:
-        return "2 o'clock"
+        return "right"
 
 def get_depth_zone(box_area, frame_area):
     ratio = box_area / frame_area
