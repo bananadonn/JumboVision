@@ -24,7 +24,7 @@ export default function App(){
     
     useEffect(() => {
         if (!started) return;
-
+        
         const handleKeyDown = (e:KeyboardEvent) => {
             if (e.code === "ArrowRight") {
                 setFocusedIndex(prev => {
@@ -50,16 +50,17 @@ export default function App(){
                     speak(elements[focusedIndex].text2);
                 }
             }
-            if (e.code === "Space" && cameraOpen) {
-                e.preventDefault();
-                setIsDetecting(true);
-                captureAndDetect(videoRef, canvasRef, setLastDescription).then(() => setIsDetecting(false));
-            }
         };
         
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
         }, [started, focusedIndex, cameraOpen]);
+
+    //start capture loop to send frames
+    useEffect(() => {
+        if (!cameraOpen) return;
+        captureAndDetect(videoRef, canvasRef, setLastDescription);
+    }, [cameraOpen]);
 
     return(
         <div>

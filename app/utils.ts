@@ -33,34 +33,62 @@ export const speak = (text: string) => {
   lastTime = now;
 };
 
+let ws: WebSocket | null = null;
+
+const getWebSocket = (): Promise<WebSocket> => {
+    return new Promise((resolve, reject) => {
+        if (ws && ws.readyState == WebSocket.OPEN) {
+            resolve(ws);
+            return;
+        }
+        ws = new WebSocket("ws://127.0.0.1:8000/ws");
+        ws.onopen = () => resolve(ws!);
+        ws.onerror = (e) => reject(e);
+    })
+}
+
+let isRunning = false;
+
 export const captureAndDetect = async (
-    videoRef: React.RefObject<HTMLVideoElement>,
-    canvasRef: React.RefObject<HTMLCanvasElement>,
+    videoRef: React.RefObject<HTMLVideoElement | null>,
+    canvasRef: React.RefObject<HTMLCanvasElement | null>,
     setLastDescription: (desc: string) => void
 ) => {
-    const mockDetections = [
-        { label: "person", position: "directly ahead" },
-        { label: "chair", position: "to your left" },
-        { label: "door", position: "to your right" },
-        {label: "water ", position: "behind you" },
-        {label: "Cameron", position: "in front of you" },
-        {label: "W'sssss", position: "in the chat" },
-        {label: "C sharp", position: "for the win" },
-        {label: "Daniel", position: "listening to nothing to your right" },
-        {label: "Who is winning JumboHack '26", position: "Bet we are!!" },
-        {label: "Ram", position: "is the best dev I've ever met!!" },   
-    ];
+    
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if(!video || !canvas) return;
 
-    const description = mockDetections
-        .map((d) => `${d.label} ${d.position}`)
-        .join(", ");
+    isRunning = true;
 
-    speak(description);
-    setLastDescription(description);
+    const loop = async () => {
+        if (!isRunning) return;
+        console.log("loop running");
+
+        const ctx = canvas!.getContext("2d");
+        ctx?.drawImage( video , 0,0, canvas!.width, canvas!.height);
+        const base64 = canvas!.toDataURL("image/jpeg").split(",")[1];
+
+        try {
+            const socket = await getWebSocket();
+            socket.send(JSON.stringify({ frame: base64 }));
+
+            socket.onmessage = (e) => {
+                const data = JSON.parse(e.data);
+                const description = data.alerts.join(", ");
+                speak(description);
+                setLastDescription(description);
+                loop();
+            };
+    } catch (err) {
+        console.log("Could not connect to server.");
+    }
+    };
+    loop();
 };
 
 export const startCamera = async (
-    videoRef: React.RefObject<HTMLVideoElement>,
+    videoRef: React.RefObject<HTMLVideoElement | null>,
     setCameraOpen: (open: boolean) => void
 ) => {
     try {
