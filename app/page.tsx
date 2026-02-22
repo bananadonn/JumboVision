@@ -4,11 +4,11 @@ import React, { useRef, useState, useEffect } from "react";
 import { speak, captureAndDetect, startCamera } from "./utils";
 
 const elements = [
-    {id: "title", text: "JumboVision. An AI assistant for the visually impaired." },
-    {id: "skipToCamera", text: "Skip to camera button"},
-    {id: "howto", text: "How to use. Click the Start Camera button, then press Space at any time to scan the scene and hear what is around you." },
-    {id: "whatwedo", text: "What We Do. JumboVision uses your camera and AI to describe the world around you in real time." },
-    {id: "startcamera", text: "Start Camera button. Press Enter to activate. Press space to scan your surroundings", isButton: true }
+    {id: "title", text: "JumboVision", text2: "An AI assistant for the visually impaired." },
+    {id: "skipToCamera", text: "Skip to camera button", text2:""},
+    {id: "howto", text: "How to use.", text2:"Click the Start Camera button, then press Space at any time to scan the scene and hear what is around you." },
+    {id: "whatwedo", text: "What We Do.", text2:"JumboVision uses your camera and AI to describe the world around you in real time."},
+    {id: "startcamera", text: "Start Camera button. Press Enter to activate. Press space to scan your surroundings", text2:"", isButton: true }
     
 ];
 
@@ -44,6 +44,9 @@ export default function App(){
                 if (elements[focusedIndex].id === "startcamera") {
                     speak("Starting camera.");
                     startCamera(videoRef, setCameraOpen);
+                }
+                else {
+                    speak(elements[focusedIndex].text2);
                 }
             }
             if (e.code === "Space" && cameraOpen) {
