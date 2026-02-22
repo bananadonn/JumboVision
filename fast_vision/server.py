@@ -26,7 +26,6 @@ async def websocket_endpoint(websocket: WebSocket):
             #test response
             alerts = await analyze_frame(frame_bytes)
             await websocket.send_text(json.dumps({"alerts": alerts}))
-            print("alert generated")
 
     except WebSocketDisconnect:
         print("frontend disconnected")

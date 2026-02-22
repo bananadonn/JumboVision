@@ -71,15 +71,21 @@ export const captureAndDetect = async (
 
         try {
             const socket = await getWebSocket();
-            socket.send(JSON.stringify({ frame: base64 }));
 
             socket.onmessage = (e) => {
+                console.log(e.data);
                 const data = JSON.parse(e.data);
-                const description = data.alerts.join(", ");
+                if (!data.alerts || data.alerts.length === 0) {
+                    loop();
+                    return;
+                }
+                const description = data.alerts.join(",");
                 speak(description);
                 setLastDescription(description);
                 loop();
             };
+
+            socket.send(JSON.stringify({frame: base64 }))
     } catch (err) {
         console.log("Could not connect to server.");
     }
