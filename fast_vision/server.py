@@ -2,6 +2,7 @@
 import cv2
 import numpy as np
 import base64
+from vision import analyze_frame
 
 import json
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
@@ -21,13 +22,11 @@ async def websocket_endpoint(websocket: WebSocket):
 
             #decode base64 into image
             frame_bytes = base64.b64decode(message["frame"])
-            np_array = np.frombugger(frame_bytes, dtype=np.uint8)
-            frame = cv2.imdecode(np_array,cv2.IMREAD_COLOR)
 
             #test response
-            await websocket.send_text(json.dumps({
-                "alerts": ["websocket functional"]
-            }))
+            alerts = await analyze_frame(frame_bytes)
+            await websocket.send_text(json.dumps({"alerts": alerts}))
+
     except WebSocketDisconnect:
         print("frontend disconnected")
         
