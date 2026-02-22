@@ -8,7 +8,7 @@ const elements = [
     {id: "skipToCamera", text: "Skip to camera button", text2:""},
     {id: "howto", text: "How to use.", text2:"Click the Start Camera button, then press Space at any time to scan the scene and hear what is around you." },
     {id: "whatwedo", text: "What We Do.", text2:"JumboVision uses your camera and AI to describe the world around you in real time."},
-    {id: "startcamera", text: "Start Camera button. Press Enter to activate. Press space to scan your surroundings", text2:"", isButton: true }
+    {id: "startcamera", text: "Start Camera button. Press Enter to activate.", text2:"Press space to scan your surroundings", isButton: true }
     
 ];
 
@@ -44,6 +44,7 @@ export default function App(){
                 if (elements[focusedIndex].id === "startcamera") {
                     speak("Starting camera.");
                     startCamera(videoRef, setCameraOpen);
+                    speak(elements[focusedIndex].text2);
                 }
                 else {
                     speak(elements[focusedIndex].text2);
