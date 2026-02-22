@@ -5,10 +5,10 @@ import { speak, captureAndDetect, startCamera, closeCamera } from "./utils";
 
 const elements = [
   { id: "title", text: "JumboVision", text2: "An AI assistant for the visually impaired." },
-  { id: "skipToCamera", text: "Skip to camera button. Click enter to move to the camera button", text2: "" },
-  { id: "howto", text: "How to use.", text2: "Click the Start Camera button, then let your camera scan the scene and hear what is around you." },
+  { id: "howto", text: "How to use. Use arrow keys to navigate buttons. Press enter to activate button.", text2:"" },
+  { id: "skipToCamera", text: "Skip to camera button.", text2: "" },
   { id: "whatwedo", text: "What We Do.", text2: "JumboVision uses your camera and AI to describe the world around you in real time." },
-  { id: "startcamera", text: "Start Camera button. Press Enter to activate.", text2: "", isButton: true },
+  { id: "startcamera", text: "Start Camera button.", text2: "", isButton: true },
 ];
 
 export default function App(){
@@ -50,7 +50,7 @@ export default function App(){
                 }
                 else if (elements[focusedIndex].id === "skipToCamera") {
                   setFocusedIndex(prev => {
-                    const next = focusedIndex + 3;
+                    const next = focusedIndex + 2;
                     speak(elements[next].text);
                     return next;
                   });
@@ -87,21 +87,20 @@ export default function App(){
                         <span className="relative">JumboVision</span>
                     </div>
                 </button>
-
-            {/* SKIP */}
+          {/* HOW TO */}
             <button
               className={`${navBtnBase} ${focusedIndex === 1 ? navBtnFocus : navBtnIdle}`}
-              aria-label="Skip to Start Camera"
-            >
-              Skip to Start Camera
-            </button>
-
-            {/* HOW TO */}
-            <button
-              className={`${navBtnBase} ${focusedIndex === 2 ? navBtnFocus : navBtnIdle}`}
               aria-label="How To"
             >
               How To
+            </button>
+
+            {/* SKIP */}
+            <button
+              className={`${navBtnBase} ${focusedIndex === 2 ? navBtnFocus : navBtnIdle}`}
+              aria-label="Skip to Start Camera"
+            >
+              Skip to Start Camera
             </button>
 
             {/* WHAT WE DO */}
@@ -119,9 +118,8 @@ export default function App(){
         <div className="flex flex-col items-center gap-6 sm:gap-8">
           {/* Start Camera */}
           <button
-            className={`w-full max-w-sm rounded-xl px-5 py-3 text-base sm:text-lg font-bold transition-all duration-200 ${
-              focusedIndex === 4 ? "ring-2 ring-[#D4A843] ring-offset-2 ring-offset-black bg-[#5E2B6B]" : "bg-[#5E2B6B] hover:bg-[#75437D]"
-            }`}
+            className={`w-full max-w-sm rounded-xl px-5 py-4 text-base sm:text-lg font-bold transition-all duration-200 ${
+              focusedIndex === 4 ? "ring-2 ring-[#D4A843] ring-offset-2 ring-offset-black bg-[#753285]" : "bg-[#5E2B6B] hover:bg-[#753285]"}`}
             onClick={async () => {
               speak("Welcome to JumboVision. Press the Start Camera button to begin.");
               await startCamera(videoRef, setCameraOpen);
@@ -137,7 +135,7 @@ export default function App(){
               autoPlay
               playsInline
               muted
-              className="w-full scale-x-[-1] aspect-video rounded-xl bg-black border border-white/10"
+              className="w-full scale-x-[-1] aspect-video rounded-3xl bg-black"
             />
             <canvas ref={canvasRef} width={640} height={480} className="hidden" />
           </div>
