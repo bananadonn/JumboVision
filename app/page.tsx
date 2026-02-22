@@ -13,8 +13,8 @@ const elements = [
 
 export default function App(){
 
-    const videoRef = useRef<HTMLVideoElement>(null);
-    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const videoRef = useRef<HTMLVideoElement | null>(null);
+    const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const [cameraOpen, setCameraOpen] = useState(false);
     const [isDetecting, setIsDetecting] = useState(false);
     const [lastDescription, setLastDescription] = useState("");
