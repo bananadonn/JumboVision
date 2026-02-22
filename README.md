@@ -1,4 +1,21 @@
-<<<<<<< HEAD
+Team Name: JumboVision
+
+Goal: Out goal for this project was to make a application for the visually impaired,
+where they can use their camera to detect what is in front of them in real time, 
+and get it relayed to them through Text to Speech. Over the weekend, we were able
+to accomplish .....
+
+The Team:
+    - Cameron Griswold: Mostly helped build the front end and the Arrowkey TTS functionality
+    - Catherine Ting: Design concept, frontend + website functionality
+
+Aknowledgements:
+    We used YOLO to create object identificiation and location text by sending it
+    frames from the camera
+
+
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
@@ -35,7 +52,3 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
-# JumboVision
-Creating an AI Vision Model to help the direct blind people to see.
->>>>>>> 19503168c16a21be15c89a774d94cab8dfe50f81
