@@ -110,7 +110,7 @@ export const startCamera = async (
 };
 
 export const closeCamera = async (
-    videoRef: React.RefObject<HTMLVideoElement>,
+    videoRef: React.RefObject<HTMLVideoElement | null>,
     setCameraOpen: (open: boolean) => void
 ) => {
     if(videoRef.current && videoRef.current.srcObject) {
