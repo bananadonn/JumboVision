@@ -103,8 +103,22 @@ export const startCamera = async (
             videoRef.current.srcObject = stream;
         }
         setCameraOpen(true);
-        speak("Camera started. Press Space to scan the scene.");
+        speak("Camera started");
     } catch (err) {
         speak("Could not access camera. Please allow camera permissions.");
     }
 };
+
+export const closeCamera = async (
+    videoRef: React.refObject<HTMLVideoElement>,
+    setCameraOpen: (open: boolean) => void
+) => {
+    if(videoRef.current && videoRef.current.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
+        videoRef.current.srcObject = null;
+        isRunning = false;
+    }
+    setCameraOpen(false);
+    speak("camera stopped");
+}
