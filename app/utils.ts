@@ -41,7 +41,7 @@ const getWebSocket = (): Promise<WebSocket> => {
             resolve(ws);
             return;
         }
-        ws = new WebSocket("ws://abc123.ngrok.io/ws");
+        ws = new WebSocket("wss://abc123.ngrok.io/ws");
         ws.onopen = () => resolve(ws!);
         ws.onerror = (e) => reject(e);
     })
@@ -109,16 +109,19 @@ export const startCamera = async (
     }
 };
 
-export const closeCamera = async (
-    videoRef: React.RefObject<HTMLVideoElement>,
-    setCameraOpen: (open: boolean) => void
+export const closeCamera = (
+  videoRef: React.RefObject<HTMLVideoElement | null>,
+  setCameraOpen: (open: boolean) => void
 ) => {
-    if(videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream.getTracks().forEach(track => track.stop());
-        videoRef.current.srcObject = null;
-        isRunning = false;
-    }
-    setCameraOpen(false);
-    speak("camera stopped");
-}
+  const video = videoRef.current;
+  if (!video) return;
+
+  const src = video.srcObject;
+  if (src instanceof MediaStream) {
+    src.getTracks().forEach((track) => track.stop());
+  }
+
+  video.srcObject = null;
+  setCameraOpen(false);
+  speak("Camera stopped.");
+};
