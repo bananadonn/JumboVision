@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { speak, captureAndDetect, startCamera } from "./utils";
+import { speak, captureAndDetect, startCamera, closeCamera } from "./utils";
 
 const elements = [
   { id: "title", text: "JumboVision", text2: "An AI assistant for the visually impaired." },
   { id: "skipToCamera", text: "Skip to camera button. Click enter to move to the camera button", text2: "" },
-  { id: "howto", text: "How to use.", text2: "Click the Start Camera button, then press Space at any time to scan the scene and hear what is around you." },
+  { id: "howto", text: "How to use.", text2: "Click the Start Camera button, then let your camera scan the scene and hear what is around you." },
   { id: "whatwedo", text: "What We Do.", text2: "JumboVision uses your camera and AI to describe the world around you in real time." },
-  { id: "startcamera", text: "Start Camera button. Press Enter to activate.", text2: "Press space to scan your surroundings", isButton: true },
+  { id: "startcamera", text: "Start Camera button. Press Enter to activate.", text2: "", isButton: true },
 ];
 
 export default function App(){
@@ -41,9 +41,19 @@ export default function App(){
             }
             if (e.code === "Enter") {
                 if (elements[focusedIndex].id === "startcamera") {
+                    if (cameraOpen)
+                        closeCamera(videoRef, setCameraOpen);
+                    else {
                     speak("Starting camera.");
                     startCamera(videoRef, setCameraOpen);
-                    speak(elements[focusedIndex].text2);
+                    }
+                }
+                else if (elements[focusedIndex].id === "skipToCamera") {
+                  setFocusedIndex(prev => {
+                    const next = focusedIndex + 3;
+                    speak(elements[next].text);
+                    return next;
+                  });
                 }
                 else {
                     speak(elements[focusedIndex].text2);
