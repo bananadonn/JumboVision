@@ -41,7 +41,7 @@ const getWebSocket = (): Promise<WebSocket> => {
             resolve(ws);
             return;
         }
-        ws = new WebSocket("ws://abc123.ngrok.io/ws");
+        ws = new WebSocket("wss://abc123.ngrok.io/ws");
         ws.onopen = () => resolve(ws!);
         ws.onerror = (e) => reject(e);
     })
